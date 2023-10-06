@@ -19,6 +19,7 @@ spec:
                     selector:
                       matchLabels:
                         environment: 'stg'
+                        'component-{{path.basename}}-enabled': true 
                     values:
                       environment: 'stg'
                 - git:
