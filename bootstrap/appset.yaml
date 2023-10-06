@@ -26,9 +26,9 @@ spec:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: 'bootstrap/{{path.basename}}/stg/config.yaml'
+                      - path: 'bootstrap/{{path.basename}}/**/config.yaml'
                     values:
-                      environment: 'stg'
+                      environment: '{{configfile.path[2]}}'
   template:
     metadata:
       name: '{{values.environment}}-{{path.basename}}-{{name}}'
