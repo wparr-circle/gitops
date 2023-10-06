@@ -21,19 +21,23 @@ spec:
                 - clusters:
                     selector:
                       matchLabels:
-                        environment: {{environment}}
+                        environment: '{{environment}}'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: {{path.basename}}/config-stg.yaml
+                      - path: '{{path.basename}}/config-stg.yaml'
   template:
     metadata:
       name: '{{environment}}-{{path.basename}}-{{name}}'
     spec:
       project: '{{environment}}'
       source:
-        repoURL: {{repoUrl}}
+        repoURL: '{{repoUrl}}'
+        targetRevision: '{{revision}}'
+      destination:
+        server: '{{server}}'
+        namespace: '{{path.basename}}'
         targetRevision: {{revision}}
       destination:
         server: '{{server}}'
