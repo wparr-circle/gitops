@@ -22,14 +22,14 @@ spec:
                       matchLabels:
                         'component-{{.path.basename}}-enabled': 'true'
                     values:
-                      environment: '{{ .metadata.labels.environment }}'
+                      environment: '{{ index .metadata.labels "environment" }}'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
                       - path: '{{.path.basename}}/**/config.yaml'
                     values:
-                      environment: '{{.path[2]}}'
+                      environment: '{{index .path.segments 1}}'
   template:
     metadata:
       name: '{{.values.environment}}-{{.path.basename}}-{{.name}}'
