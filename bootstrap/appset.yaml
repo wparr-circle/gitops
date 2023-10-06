@@ -31,7 +31,11 @@ spec:
       project: 'default'
       source:
         repoURL: '{{repoUrl}}'
-        targetRevision: '{{revision}}'
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
+        helm:
+          version: v3
+          releaseName: '{{path.basename}}'
       destination:
         server: '{{server}}'
         namespace: '{{path.basename}}'
