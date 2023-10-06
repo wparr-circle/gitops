@@ -20,7 +20,7 @@ spec:
                 - clusters:
                     selector:
                       matchLabels:
-                        'component-{{path.basename}}-enabled': 'true'
+                        'component-ingress-enabled': 'true'
                     values:
                       environment: '{{ metadata.labels.environment }}'
                 - git:
