@@ -6,40 +6,138 @@ spec:
   generators:
     - matrix:
         generators:
-          - git:
-              repoURL: https://github.com/wparr-circle/gitops.git
-              revision: HEAD
-              directories:
-                - path: bootstrap/*
+          - clusters:
+              values:
+                account_alias: '{{ metadata.labels.account_alias }}'
+                region: '{{ metadata.labels.region }}'
+                environment: '{{ metadata.labels.env }}'
+                cluster: '{{ name }}'
           - merge:
               mergeKeys:
-                - values.environment
-              generators:
-                - clusters:
-                    selector:
-                      matchLabels:
-                        'component-{{path.basename}}-enabled': 'true'
-                    values:
-                      environment: '{{ metadata.labels.environment }}'
-                - git:
-                    repoURL: https://github.com/wparr-circle/gitops.git
-                    revision: HEAD
-                    files:
-                      - path: '{{path.basename}}/stg/config.yaml'
-                    values:
-                      environment: 'stg'
+              - values.component
+              generators:        
+              - git:
+                  files:
+                  - path: 'apps/*/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-global
+                  values:
+                    component: '{{ config-global.path[1] }}'
+                    config-global: 'true'
+                    config-global-environment: 'false'
+                    config-account: 'false'
+                    config-account-region: 'false'
+                    config-account-region-environment: 'false'
+                    config-account-region-environment-cluster: 'false'
+              - git:
+                  files:
+                  - path: 'apps/*/{{ values.environment }}/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-global-environment
+                  values:
+                    component: '{{ config-global-environment.path[1] }}'
+                    config-global-environment: 'true'
+              - git:
+                  files:
+                  - path: 'clusters/{{ values.account_alias }}/overlays/*/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-account
+                  values:
+                    component: '{{ config-account.path[3] }}'
+                    config-account: 'true'
+              - git:
+                  files:
+                  - path: 'clusters/{{ values.account_alias }}/{{ values.region }}/overlays/*/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-account-region
+                  values:
+                    component: '{{ config-account-region.path[4] }}'
+                    config-account-region: 'true'
+              - git:
+                  files:
+                  - path: 'clusters/{{ values.account_alias }}/{{ values.region }}/{{ values.environment }}/overlays/*/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-account-region-environment
+                  values:
+                    component: '{{ config-account-region-environment.path[5] }}'
+                    config-account-region-environment: 'true'
+              - git:
+                  files:
+                  - path: 'clusters/{{ values.account_alias }}/{{ values.region }}/{{ values.environment }}/{{ values.cluster }}/overlays/*/config.yaml'
+                  repoURL: https://github.com/wparr-circle/gitops.git
+                  revision: main
+                  pathParamPrefix: config-account-region-environment-cluster
+                  values:
+                    component: '{{ config-account-region-environment-cluster.path[6] }}'
+                    config-account-region-environment-cluster: 'true'
+            selector:
+              matchLabels:
+                enabled: 'true'
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     steps:
+  #       - matchExpressions:
+  #         - key: values.environment
+  #           operator: In
+  #           values:
+  #           - stg
+  #           - smokebox
+  #           - sandbox
+  #         maxUpdate: 50%
+  #       - matchExpressions:
+  #         - key: values.environment
+  #           operator: In
+  #           values:
+  #           - prod
+  #         maxUpdate: 25%
   template:
     metadata:
-      name: '{{values.environment}}-{{path.basename}}-{{name}}'
+      name: '{{ values.account_alias }}-{{ values.region }}-{{ values.environment }}-{{ name }}-{{ values.component }}'
+      labels:
+        cluster: '{{ values.cluster }}'
+        account_alias: '{{ values.account_alias }}'
+        region: '{{ values.region }}'
+        environment: '{{ values.environment }}'
+        component: '{{ values.component }}'
+        # Config Indicator Labels to show what config levels are enabled for this component.
+        config-global: '{{ values.config-global }}'
+        config-global-environment: '{{ values.config-global-environment }}'
+        config-account: '{{ values.config-account }}'
+        config-account-region: '{{ values.config-account-region }}'
+        config-account-region-environment: '{{ values.config-account-region-environment }}'
+        config-account-region-environment-cluster: '{{ values.config-account-region-environment-cluster }}'
     spec:
       project: 'default'
-      source:
-        repoURL: '{{repoUrl}}'
-        chart: '{{chart}}'
-        targetRevision: '{{targetRevision}}'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+      sources:
+      - repoURL: '{{ repoUrl }}'
+        chart: '{{ chart }}'
+        targetRevision: '{{ revision }}'
         helm:
           version: v3
-          releaseName: '{{path.basename}}'
+          releaseName: '{{ values.component }}'
+          ignoreMissingValueFiles: true
+          valueFiles:
+          - $values/apps/{{ values.component }}/values.yaml
+          - $values/apps/{{ values.component }}/{{ values.environment }}/values.yaml
+          - $values/clusters/{{ values.account_alias }}/overlays/{{ values.component}}/values.yaml
+          - $values/clusters/{{ values.account_alias }}/{{ values.region}}/overlays/{{ values.component}}/values.yaml
+          - $values/clusters/{{ values.account_alias }}/{{ values.region}}/{{ values.environment }}/overlays/{{ values.component}}/values.yaml
+          - $values/clusters/{{ values.account_alias }}/{{ values.region}}/{{ values.environment }}/{{ values.cluster }}/overlays/{{ values.component}}/values.yaml
+      - repoURL: https://github.com/wparr-circle/gitops.git
+        targetRevision: main
+        ref: values
       destination:
-        server: '{{server}}'
-        namespace: '{{path.basename}}'
+        server: '{{ server }}'
+        namespace: '{{ values.component }}'
