@@ -13,17 +13,21 @@ spec:
                 - path: bootstrap/*
           - merge:
               mergeKeys:
-                - environment
+                - values.environment
               generators:
                 - clusters:
                     selector:
                       matchLabels:
                         environment: 'stg'
+                    values:
+                      selector: 'stg'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
                       - path: '{{path.basename}}/config.yaml'
+                    values:
+                      selector: 'stg'
   template:
     metadata:
       name: 'stg-{{path.basename}}-{{name}}'
