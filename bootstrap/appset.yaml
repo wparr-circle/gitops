@@ -38,7 +38,3 @@ spec:
       destination:
         server: '{{server}}'
         namespace: '{{path.basename}}'
-        targetRevision: {{revision}}
-      destination:
-        server: '{{server}}'
-        namespace: '{{path.basename}}'
