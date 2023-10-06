@@ -14,6 +14,7 @@ spec:
           - merge:
               mergeKeys:
                 - values.environment
+                - values.component
               generators:
                 - clusters:
                     selector:
@@ -21,6 +22,15 @@ spec:
                         'component-{{path.basename}}-enabled': 'true'
                     values:
                       environment: '{{ metadata.labels.environment }}'
+                      component: '{{path.basename}}'
+                - git:
+                    pathParamPrefix: sharedconfigfile
+                    repoURL: https://github.com/wparr-circle/gitops.git
+                    revision: HEAD
+                    files:
+                      - path: 'bootstrap/{{path.basename}}/config.yaml'
+                    values:
+                      component: '{{path.basename}}'
                 - git:
                     pathParamPrefix: configfile
                     repoURL: https://github.com/wparr-circle/gitops.git
