@@ -12,7 +12,7 @@ spec:
               directories:
                 - path: bootstrap/*
           - merge:
-              margeKeys:
+              mergeKeys:
                 - environment
               generators:
                 - clusters:
