@@ -20,17 +20,17 @@ spec:
                       matchLabels:
                         environment: 'stg'
                     values:
-                      selector: 'stg'
+                      environment: 'stg'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
                       - path: '{{path.basename}}/config.yaml'
                     values:
-                      selector: 'stg'
+                      environment: 'stg'
   template:
     metadata:
-      name: 'stg-{{path.basename}}-{{name}}'
+      name: '{{environment}}-{{path.basename}}-{{name}}'
     spec:
       project: 'default'
       source:
