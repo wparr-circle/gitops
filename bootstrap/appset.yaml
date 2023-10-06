@@ -25,18 +25,18 @@ spec:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: '{{path.basename}}/**/config.yaml'
+                      - path: '{{path.basename}}/stg/config.yaml'
                     values:
-                      environment: '{{path[1]}}'
+                      environment: 'stg'
   template:
     metadata:
       name: '{{values.environment}}-{{path.basename}}-{{name}}'
     spec:
       project: 'default'
       source:
-        repoURL: '{{values.repoUrl}}'
-        chart: '{{values.chart}}'
-        targetRevision: '{{values.targetRevision}}'
+        repoURL: '{{repoUrl}}'
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
         helm:
           version: v3
           releaseName: '{{path.basename}}'
