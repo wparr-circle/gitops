@@ -12,6 +12,8 @@ spec:
               directories:
                 - path: bootstrap/*
           - merge:
+              margeKeys:
+                - environment
               generators:
                 - clusters:
                     selector:
@@ -21,7 +23,7 @@ spec:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: '{{path.basename}}/config-stg.yaml'
+                      - path: '{{path.basename}}/config.yaml'
   template:
     metadata:
       name: 'stg-{{path.basename}}-{{name}}'
