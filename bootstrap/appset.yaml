@@ -1,14 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: cluster-git
+  name: bootstrap
 spec:
   generators:
     - matrix:
         generators:
-          - list:
-              elements:
-               - environment: stg
           - git:
               repoURL: https://github.com/wparr-circle/gitops.git
               revision: HEAD
@@ -21,7 +18,7 @@ spec:
                 - clusters:
                     selector:
                       matchLabels:
-                        environment: '{{environment}}'
+                        environment: 'stg'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
@@ -29,9 +26,9 @@ spec:
                       - path: '{{path.basename}}/config-stg.yaml'
   template:
     metadata:
-      name: '{{environment}}-{{path.basename}}-{{name}}'
+      name: 'stg-{{path.basename}}-{{name}}'
     spec:
-      project: '{{environment}}'
+      project: 'default'
       source:
         repoURL: '{{repoUrl}}'
         targetRevision: '{{revision}}'
