@@ -23,6 +23,7 @@ spec:
                     values:
                       environment: '{{ metadata.labels.environment }}'
                       component: '{{path.basename}}'
+                # NOTE: this doesn't work as expected due to missing mergeKey
                 - git:
                     pathParamPrefix: sharedconfigfile
                     repoURL: https://github.com/wparr-circle/gitops.git
