@@ -1,0 +1,9 @@
+repoUrl: https://kubernetes.github.io/ingress-nginx
+chart: ingress-nginx
+revision: 4.0.5
+overlays:
+  global: 'true'
+  account: 'false'
+  region: 'false'
+  environment: 'false'
+  cluster: 'false'
