@@ -3,8 +3,6 @@ kind: ApplicationSet
 metadata:
   name: bootstrap
 spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
   generators:
     - matrix:
         generators:
@@ -20,28 +18,28 @@ spec:
                 - clusters:
                     selector:
                       matchLabels:
-                        'component-{{.path.basename}}-enabled': 'true'
+                        'component-{{path.basename}}-enabled': 'true'
                     values:
-                      environment: '{{ index .metadata.labels "environment" }}'
+                      environment: '{{ metadata.labels.environment }}'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: '{{.path.basename}}/**/config.yaml'
+                      - path: '{{path.basename}}/**/config.yaml'
                     values:
-                      environment: '{{index .path.segments 1}}'
+                      environment: '{{path[1]}}'
   template:
     metadata:
-      name: '{{.values.environment}}-{{.path.basename}}-{{.name}}'
+      name: '{{values.environment}}-{{path.basename}}-{{name}}'
     spec:
       project: 'default'
       source:
-        repoURL: '{{.repoUrl}}'
-        chart: '{{.chart}}'
-        targetRevision: '{{.targetRevision}}'
+        repoURL: '{{repoUrl}}'
+        chart: '{{chart}}'
+        targetRevision: '{{targetRevision}}'
         helm:
           version: v3
-          releaseName: '{{.path.basename}}'
+          releaseName: '{{path.basename}}'
       destination:
-        server: '{{.server}}'
-        namespace: '{{.path.basename}}'
+        server: '{{server}}'
+        namespace: '{{path.basename}}'
