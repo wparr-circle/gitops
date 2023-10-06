@@ -25,7 +25,7 @@ spec:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: '{{path.basename}}/*/config.yaml'
+                      - path: '{{path.basename}}/**/config.yaml'
                     values:
                       environment: '{{path[2]}}'
   template:
