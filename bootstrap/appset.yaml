@@ -18,17 +18,16 @@ spec:
                 - clusters:
                     selector:
                       matchLabels:
-                        environment: 'stg'
                         'component-{{path.basename}}-enabled': 'true'
                     values:
-                      environment: 'stg'
+                      environment: '{{ metadata.labels.environment }}'
                 - git:
                     repoURL: https://github.com/wparr-circle/gitops.git
                     revision: HEAD
                     files:
-                      - path: '{{path.basename}}/config.yaml'
+                      - path: '{{path.basename}}/*/config.yaml'
                     values:
-                      environment: 'stg'
+                      environment: '{{path[2]}}'
   template:
     metadata:
       name: '{{values.environment}}-{{path.basename}}-{{name}}'
