@@ -1,5 +1,3 @@
-values:
-  environment: stg
-  repoUrl: https://kubernetes.github.io/ingress-nginx
-  chart: ingress-nginx
-  revision: 4.0.5
+repoUrl: https://kubernetes.github.io/ingress-nginx
+chart: ingress-nginx
+revision: 4.0.5
