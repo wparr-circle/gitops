@@ -30,7 +30,7 @@ spec:
                       environment: 'stg'
   template:
     metadata:
-      name: '{{environment}}-{{path.basename}}-{{name}}'
+      name: '{{values.environment}}-{{path.basename}}-{{name}}'
     spec:
       project: 'default'
       source:
