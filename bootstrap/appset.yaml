@@ -34,9 +34,9 @@ spec:
     spec:
       project: 'default'
       source:
-        repoURL: '{{repoUrl}}'
-        chart: '{{chart}}'
-        targetRevision: '{{targetRevision}}'
+        repoURL: '{{values.repoUrl}}'
+        chart: '{{values.chart}}'
+        targetRevision: '{{values.targetRevision}}'
         helm:
           version: v3
           releaseName: '{{path.basename}}'
