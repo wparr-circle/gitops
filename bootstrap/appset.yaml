@@ -39,6 +39,7 @@ spec:
                       - path: 'bootstrap/{{path.basename}}/**/config.yaml'
                     values:
                       environment: '{{configfile.path[2]}}'
+                      component: '{{path.basename}}'
   template:
     metadata:
       name: '{{values.environment}}-{{path.basename}}-{{name}}'
