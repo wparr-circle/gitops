@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    managed-by: argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+    component-ingress-enabled: "true"
+    environment: prod
+  name: cluster-kubernetes.default.svc-3396314289
+  namespace: argocd
+data:
+  config: eyJ0bHNDbGllbnRDb25maWciOnsiaW5zZWN1cmUiOmZhbHNlfX0=
+  name: aW4tY2x1c3Rlcg==
+  server: aHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3Zj
+type: Opaque
